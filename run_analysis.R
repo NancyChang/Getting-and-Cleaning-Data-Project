@@ -7,6 +7,7 @@ unlink(temp)
 install.packages("data.table")
 library(data.table)
 features <- read.table("./UCI HAR Dataset/features.txt", sep="\t", stringsAsFactors=FALSE)
+activity_labels <- read.table("./UCI HAR Dataset/activity_labels.txt", sep="\t", stringsAsFactors=FALSE)
 test_set <- read.table("./UCI HAR Dataset/test/X_test.txt", sep="\t", stringsAsFactors=FALSE)
 test_labels <- read.table("./UCI HAR Dataset/test/y_test.txt", sep="\t", stringsAsFactors=FALSE)
 test_subject <- read.table("./UCI HAR Dataset/test/subject_test.txt", sep="\t", stringsAsFactors=FALSE)
@@ -62,5 +63,7 @@ bigData <- data.table(cbind(data_col, dt))
 #         for each activity and each subject, and store as txt file named DataSummary
 Data_summary <- bigData[,lapply(.SD, mean), by = c("subject", "activity")]
 DataSummary <- Data_summary[order(subject, activity)]
+activity_lab <- gsub("[1-9 ]","",activity_labels$V1)
+DataSummary$activity <- rep(activity_lab, 30)
 write.table(DataSummary, file="E:/2014_Study/4_Getting and Cleaning Data/Course Project/DataSummary.txt", row.names=FALSE, col.names=TRUE, sep="\t", quote=FALSE)
 
